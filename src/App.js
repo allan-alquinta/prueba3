@@ -4,7 +4,7 @@ import Formulario from "./Formulario";
 function App() {
   return (
     <div className="App">
-      <h1>bienvenido a la organizacion communitaria</h1>
+      <h1>gestor de actividades</h1>
       <Formulario />
     </div>
   );
