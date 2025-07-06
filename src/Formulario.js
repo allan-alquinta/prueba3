@@ -159,16 +159,34 @@ function Formulario() {
         {mensaje && <p>{mensaje}</p>}
       </form>
 
-      <h2>registros guardados:</h2>
-      <ul>
-        {registros.map((item, index) => (
-          <li key={index}>
-            {item.nombre} - {item.edad} años - {item.fecha} - {item.categoria}
-            <button onClick={() => handleEditar(index)}>Editar</button>
-            <button onClick={() => handleEliminar(index)}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+      <h2>Registros guardados:</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Edad</th>
+            <th>Fecha</th>
+            <th>Categoría</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {registros.map((item, index) => (
+            <tr key={index}>
+              <td>{item.nombre}</td>
+              <td>{item.edad}</td>
+              <td>{item.fecha}</td>
+              <td>{item.categoria}</td>
+              <td>{item.descripcion}</td>
+              <td>
+                <button onClick={() => handleEditar(index)}>Editar</button>
+                <button onClick={() => handleEliminar(index)}>Eliminar</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }
