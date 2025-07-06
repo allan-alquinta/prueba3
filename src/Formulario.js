@@ -12,8 +12,8 @@ function Formulario() {
   const [registros, setRegistros] = useState([]);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [indiceEditar, setIndiceEditar] = useState(null);
+  const [mensaje, setMensaje] = useState("");
 
-  // Leer registros al cargar
   useEffect(() => {
     const datosGuardados = localStorage.getItem("registros");
     if (datosGuardados) {
@@ -21,7 +21,6 @@ function Formulario() {
     }
   }, []);
 
-  // Guardar registros al cambiar
   useEffect(() => {
     localStorage.setItem("registros", JSON.stringify(registros));
   }, [registros]);
@@ -33,14 +32,27 @@ function Formulario() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const nombreDuplicado = registros.some(
+      (item, idx) =>
+        item.nombre.toLowerCase() === datos.nombre.toLowerCase() &&
+        (!modoEdicion || idx !== indiceEditar)
+    );
+
+    if (nombreDuplicado) {
+      setMensaje("ya existe un registro con ese nombre.");
+      return;
+    }
+
     if (modoEdicion) {
       const nuevos = [...registros];
       nuevos[indiceEditar] = datos;
       setRegistros(nuevos);
+      setMensaje("registro actualizado correctamente.");
       setModoEdicion(false);
       setIndiceEditar(null);
     } else {
       setRegistros([...registros, datos]);
+      setMensaje("registro creado correctamente.");
     }
 
     setDatos({
@@ -50,6 +62,10 @@ function Formulario() {
       descripcion: "",
       categoria: "opcion1",
     });
+
+    setTimeout(() => {
+      setMensaje("");
+    }, 3000);
   };
 
   const handleEditar = (index) => {
@@ -61,7 +77,6 @@ function Formulario() {
   const handleEliminar = (index) => {
     const nuevos = registros.filter((_, i) => i !== index);
     setRegistros(nuevos);
-    // Si estabas editando el eliminado, resetea
     if (indiceEditar === index) {
       setModoEdicion(false);
       setIndiceEditar(null);
@@ -140,10 +155,11 @@ function Formulario() {
         </label>
         <br />
 
-        <button type="submit">{modoEdicion ? "Actualizar" : "Enviar"}</button>
+        <button type="submit">{modoEdicion ? "actualizar" : "enviar"}</button>
+        {mensaje && <p>{mensaje}</p>}
       </form>
 
-      <h2>Registros guardados:</h2>
+      <h2>registros guardados:</h2>
       <ul>
         {registros.map((item, index) => (
           <li key={index}>
