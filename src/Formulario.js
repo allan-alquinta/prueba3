@@ -6,12 +6,14 @@ function Formulario() {
     edad: "",
     fecha: "",
     descripcion: "",
-    categoria: "opcion1"
+    categoria: "opcion1",
   });
 
   const [registros, setRegistros] = useState([]);
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [indiceEditar, setIndiceEditar] = useState(null);
 
-
+  // Leer registros al cargar
   useEffect(() => {
     const datosGuardados = localStorage.getItem("registros");
     if (datosGuardados) {
@@ -19,6 +21,7 @@ function Formulario() {
     }
   }, []);
 
+  // Guardar registros al cambiar
   useEffect(() => {
     localStorage.setItem("registros", JSON.stringify(registros));
   }, [registros]);
@@ -29,14 +32,47 @@ function Formulario() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setRegistros([...registros, datos]);
+
+    if (modoEdicion) {
+      const nuevos = [...registros];
+      nuevos[indiceEditar] = datos;
+      setRegistros(nuevos);
+      setModoEdicion(false);
+      setIndiceEditar(null);
+    } else {
+      setRegistros([...registros, datos]);
+    }
+
     setDatos({
       nombre: "",
       edad: "",
       fecha: "",
       descripcion: "",
-      categoria: "opcion1"
+      categoria: "opcion1",
     });
+  };
+
+  const handleEditar = (index) => {
+    setDatos(registros[index]);
+    setModoEdicion(true);
+    setIndiceEditar(index);
+  };
+
+  const handleEliminar = (index) => {
+    const nuevos = registros.filter((_, i) => i !== index);
+    setRegistros(nuevos);
+    // Si estabas editando el eliminado, resetea
+    if (indiceEditar === index) {
+      setModoEdicion(false);
+      setIndiceEditar(null);
+      setDatos({
+        nombre: "",
+        edad: "",
+        fecha: "",
+        descripcion: "",
+        categoria: "opcion1",
+      });
+    }
   };
 
   return (
@@ -104,7 +140,7 @@ function Formulario() {
         </label>
         <br />
 
-        <button type="submit">Enviar</button>
+        <button type="submit">{modoEdicion ? "Actualizar" : "Enviar"}</button>
       </form>
 
       <h2>Registros guardados:</h2>
@@ -112,6 +148,8 @@ function Formulario() {
         {registros.map((item, index) => (
           <li key={index}>
             {item.nombre} - {item.edad} años - {item.fecha} - {item.categoria}
+            <button onClick={() => handleEditar(index)}>Editar</button>
+            <button onClick={() => handleEliminar(index)}>Eliminar</button>
           </li>
         ))}
       </ul>
