@@ -4,7 +4,7 @@ import Formulario from "./Formulario";
 function App() {
   return (
     <div className="App">
-      <h1>gestor de actividades</h1>
+      <h1>Comunidad Indígena Diaguita de la Sierra del Medio, Copiapó</h1>
       <Formulario />
     </div>
   );

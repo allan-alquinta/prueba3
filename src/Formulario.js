@@ -29,6 +29,21 @@ function Formulario() {
     setDatos({ ...datos, [e.target.name]: e.target.value });
   };
 
+  const traducirCategoria = (valor) => {
+    switch (valor) {
+      case "opcion1":
+        return "Taller";
+      case "opcion2":
+        return "Reunión";
+      case "opcion3":
+        return "Proyecto";
+      case "opcion4":
+        return "Otros";
+      default:
+        return "Sin categoría";
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -43,15 +58,17 @@ function Formulario() {
       return;
     }
 
+    const nuevoDato = { ...datos };
+
     if (modoEdicion) {
       const nuevos = [...registros];
-      nuevos[indiceEditar] = datos;
+      nuevos[indiceEditar] = nuevoDato;
       setRegistros(nuevos);
       setMensaje("registro actualizado correctamente.");
       setModoEdicion(false);
       setIndiceEditar(null);
     } else {
-      setRegistros([...registros, datos]);
+      setRegistros([...registros, nuevoDato]);
       setMensaje("registro creado correctamente.");
     }
 
@@ -94,7 +111,7 @@ function Formulario() {
     <>
       <form onSubmit={handleSubmit}>
         <label>
-          Nombre:
+          Gestor Responsable (nombre completo del encargado de la actividad):
           <input
             type="text"
             name="nombre"
@@ -106,7 +123,7 @@ function Formulario() {
         <br />
 
         <label>
-          Edad:
+          Edad del participante (expresado escrito en años):
           <input
             type="number"
             name="edad"
@@ -118,7 +135,7 @@ function Formulario() {
         <br />
 
         <label>
-          Fecha:
+          Fecha de Actividad (día en que se realiza la actividad):
           <input
             type="date"
             name="fecha"
@@ -130,28 +147,29 @@ function Formulario() {
         <br />
 
         <label>
-          Descripción:
-          <textarea
-            name="descripcion"
-            value={datos.descripcion}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-
-        <label>
-          Categoría:
+          Tipo de Actividad (categoría: taller, reunión, proyecto u otros):
           <select
             name="categoria"
             value={datos.categoria}
             onChange={handleChange}
             required
           >
-            <option value="opcion1">Opción 1</option>
-            <option value="opcion2">Opción 2</option>
-            <option value="opcion3">Opción 3</option>
+            <option value="opcion1">Taller</option>
+            <option value="opcion2">Reunión</option>
+            <option value="opcion3">Proyecto</option>
+            <option value="opcion4">Otros</option>
           </select>
+        </label>
+        <br />
+
+        <label>
+          Descripción Detallada de la Actividad (explicación del objetivo, contenido o propósito):
+          <textarea
+            name="descripcion"
+            value={datos.descripcion}
+            onChange={handleChange}
+            required
+          />
         </label>
         <br />
 
@@ -177,7 +195,7 @@ function Formulario() {
               <td>{item.nombre}</td>
               <td>{item.edad}</td>
               <td>{item.fecha}</td>
-              <td>{item.categoria}</td>
+              <td>{traducirCategoria(item.categoria)}</td>
               <td>{item.descripcion}</td>
               <td>
                 <button onClick={() => handleEditar(index)}>Editar</button>
